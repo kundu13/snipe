@@ -237,8 +237,7 @@ python tests/unit_tests.py
 ```
 
 ## Notes
-The default branch has been renamed!
-`master` is now named `main`
+The default branch has been renamed! `master` is now named `main`
 
 If you have a local clone already where branch name is still `master`, you can update it by running the following commands.
 
