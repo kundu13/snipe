@@ -1,5 +1,5 @@
 # Snipe
-![snipe logo](https://github.com/kundu13/snipe/blob/logo-fix/snipe-logo.png)
+![snipe logo](https://github.com/kundu13/snipe/blob/main/snipe-logo.png)
 
 Real-time code analysis that detects **cross-file semantic errors**, type inconsistencies, array bound violations, and function signature drift **while you type**—before files are saved—without external security APIs.
 
@@ -249,6 +249,7 @@ git fetch origin
 git branch -u origin/main main
 git remote set-head origin -a
 ```
+
 
 
 
