@@ -9,7 +9,7 @@
          { nodes: [...], links: [...], workspacePath: "..." }
     3. D3.js v7 builds a force-directed simulation from that data.
     4. Node shapes are determined by node.kind:
-         "file"     → rounded rectangle (color by extension, or red if hasErrors)
+         "file"     → rounded rectangle (#CD5C5C brown, or red if hasErrors)
          "function" → circle            (#61AFEF blue,  or red if hasErrors)
          "variable" → square            (#98C379 green, or red if hasErrors)
          "array"    → diamond (rotated square, #E5C07B orange, or red if hasErrors)
@@ -17,7 +17,6 @@
        the file at the correct line in the main editor column.
     6. workspacePath is prepended to relative file_path values so that
        click-to-navigate works regardless of how the parser stored the path.
-    7. Double-clicking a file node collapses/expands its child symbols.
 
   Security:
     A Content Security Policy is injected by graphPanel.ts at load time
@@ -114,27 +113,17 @@
     }
 
     .link-BELONGS_TO {
-      stroke: #C678DD;
+      stroke: #666666;
       stroke-width: 1px;
     }
 
     .link-CALLS {
-      stroke: #FF8C00;
+      stroke: #f39c12;
       stroke-width: 2px;
     }
 
     .link-REFERENCES {
-      stroke: #61AFEF;
-      stroke-width: 1.5px;
-    }
-
-    .link-INCLUDES {
-      stroke: #20B2AA;
-      stroke-width: 1.5px;
-    }
-
-    .link-IMPORTS {
-      stroke: #32CD32;
+      stroke: #3498db;
       stroke-width: 1.5px;
     }
 
@@ -152,162 +141,50 @@
       color: #cccccc;
     }
 
-    /* ── Stats bar: full-width horizontal strip at top ─────────────────── */
-    #stats-bar {
+    #stats {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(30, 30, 30, 0.9);
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 12px;
+      border: 1px solid #444;
+      z-index: 100;
+    }
+
+    #legend {
       position: fixed;
-      top: 20px;
-      left: 20px;
+      top: 10px;
       right: 20px;
       background: rgba(30, 30, 30, 0.95);
-      border: 1px solid #444;
+      padding: 15px;
       border-radius: 8px;
-      padding: 5px 16px;
-      display: none;              /* shown by JS once data loads */
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      box-sizing: border-box;
-      font-size: 10px;
-      white-space: nowrap;
-      pointer-events: none;
-      line-height: 1;
-    }
-
-    #stats-bar h3 {
-      margin: 0;
-      font-size: 11px;
-      font-weight: 600;
-      color: #e1e1e1;
-      line-height: 1;
-    }
-
-    .stats-sep { color: #555; }
-
-    /* ── Shared side panel ──────────────────────────────────────────────── */
-    .ui-panel {
-      position: fixed;
-      top: 90px;                  /* below stats bar; adjusted by JS if needed */
-      background: rgba(30, 30, 30, 0.95);
       border: 1px solid #444;
-      border-radius: 8px;
+      font-size: 12px;
       z-index: 1000;
-      box-sizing: border-box;
-      width: 140px;
-      padding: 10px 12px;
-      font-size: 10px;
-    }
-
-    /* ── Panel collapsible headers ──────────────────────────────────────── */
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      margin-bottom: 0;
-    }
-
-    .panel-header h4 {
-      margin: 0;
-      font-size: 11px;
-      font-weight: 600;
-      color: #e1e1e1;
-    }
-
-    .panel-header:hover h4 { color: #fff; }
-
-    .panel-arrow {
-      color: #888;
-      font-size: 9px;
-      line-height: 1;
-      transition: color 0.15s;
-    }
-
-    .panel-header:hover .panel-arrow { color: #ccc; }
-
-    .panel-body {
-      margin-top: 8px;
-    }
-
-    /* ── Controls: left side ────────────────────────────────────────────── */
-    #controls { left: 20px; }
-
-    #controls label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin: 4px 0;
-      cursor: pointer;
-      color: #cccccc;
-      font-size: 10px;
-    }
-
-    #controls label:hover { color: #fff; }
-
-    #controls input[type="checkbox"] {
-      accent-color: #61AFEF;
-      margin: 0;
-    }
-
-    #searchBox {
-      width: 100%;
-      margin-top: 8px;
-      padding: 4px 7px;
-      background: #2d2d2d;
-      border: 1px solid #555;
-      border-radius: 4px;
-      color: #cccccc;
-      font-size: 10px;
-      box-sizing: border-box;
-    }
-
-    #searchBox::placeholder { color: #777; }
-
-    #searchBox:focus {
-      outline: none;
-      border-color: #61AFEF;
-    }
-
-    /* ── Legend: right side ─────────────────────────────────────────────── */
-    #legend { right: 20px; }
-
-    #legend h4 {
-      margin: 0;
-      font-size: 11px;
-      font-weight: 600;
-      color: #e1e1e1;
+      display: block;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      margin: 2px 0;
-      font-size: 10px;
+      margin: 5px 0;
     }
 
     .legend-shape {
-      width: 12px;
-      height: 12px;
-      margin-right: 6px;
-      flex-shrink: 0;
+      width: 30px;
+      height: 20px;
+      margin-right: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .legend-line {
-      width: 18px;
+      width: 30px;
       height: 2px;
-      margin-right: 6px;
-      flex-shrink: 0;
-    }
-
-    .legend-section-title {
-      font-weight: 600;
-      margin: 6px 0 2px 0;
-      color: #888;
-      font-size: 9px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+      margin-right: 8px;
     }
 
     #error {
@@ -319,121 +196,47 @@
       font-size: 16px;
       text-align: center;
     }
-
-    /* Collapse badge */
-    .collapse-badge {
-      fill: #E5C07B;
-      stroke: #1e1e1e;
-      stroke-width: 1px;
-    }
-
-    .collapse-badge-text {
-      fill: #1e1e1e;
-      font-size: 9px;
-      font-weight: bold;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
   <div id="graph-container">
     <div id="loading">Loading graph...</div>
     <div id="error" style="display: none;"></div>
-
-    <!-- STATS BAR: full-width horizontal strip at top -->
-    <div id="stats-bar">
-      <h3>Snipe Graph</h3>
-      <span class="stats-sep">•</span>
-      <span id="stat-files"  style="color:#61AFEF; font-weight:500;">— files</span>
-      <span class="stats-sep">•</span>
-      <span id="stat-symbols" style="color:#98C379; font-weight:500;">— symbols</span>
-      <span class="stats-sep">•</span>
-      <span id="stat-edges"  style="color:#E5C07B; font-weight:500;">— edges</span>
-    </div>
-
-    <!-- LEFT: Filters panel (below stats bar, collapsible) -->
-    <div id="controls" class="ui-panel">
-      <div class="panel-header" onclick="toggleFilters()">
-        <h4>Filters</h4>
-        <span class="panel-arrow" id="filters-arrow">▼</span>
+    <div id="stats" style="display: none;"></div>
+    <div id="legend" style="display: block;">
+      <div style="font-weight: bold; margin-bottom: 8px;">Node Types</div>
+      <div class="legend-item">
+        <div class="legend-shape" style="background: #FFD700; width: 10px; height: 10px; border-radius: 3px;"></div>
+        <span>File (Rectangle)</span>
       </div>
-      <div id="filters-body" class="panel-body">
-        <label><input type="checkbox" id="filterErrors"> Error files only</label>
-        <label><input type="checkbox" id="filterCurrentFile"> Current file only</label>
-        <label><input type="checkbox" id="hideVariables"> Hide variables</label>
-        <label><input type="checkbox" id="filterFunctions"> Functions only</label>
-        <label><input type="checkbox" id="filterHeaders"> Header files</label>
-        <label><input type="checkbox" id="filterPyImports"> Py imports</label>
-        <input type="text" id="searchBox" placeholder="Search nodes...">
+      <div class="legend-item">
+        <div class="legend-shape" style="background: #61AFEF; width: 10px; height: 10px; border-radius: 50%;"></div>
+        <span>Function (Circle)</span>
       </div>
-    </div>
-
-    <!-- RIGHT: Legend panel (below stats bar, collapsible) -->
-    <div id="legend" class="ui-panel">
-      <div class="panel-header" onclick="toggleLegend()">
-        <h4>Node Types</h4>
-        <span class="panel-arrow" id="legend-arrow">▼</span>
+      <div class="legend-item">
+        <div class="legend-shape" style="background: #98C379; width: 10px; height: 10px;"></div>
+        <span>Variable (Square)</span>
       </div>
-      <div id="legend-body" class="panel-body">
-        <div class="legend-section-title">Files</div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:linear-gradient(#FF5555,#CC3333);border-radius:2px;"></div>
-          <span>Error file</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:linear-gradient(#FFD700,#FFA500);border-radius:2px;"></div>
-          <span>C file (.c)</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:linear-gradient(#3B82F6,#1E40AF);border-radius:2px;"></div>
-          <span>Python (.py)</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:linear-gradient(#777,#444);border-radius:2px;"></div>
-          <span>Other file</span>
-        </div>
-        <div class="legend-section-title">Symbols</div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:#61AFEF;border-radius:50%;"></div>
-          <span>Function</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:#98C379;border-radius:1px;"></div>
-          <span>Variable</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:#E5C07B;transform:rotate(45deg);width:9px;height:9px;margin-right:9px;flex-shrink:0;"></div>
-          <span>Array</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:#20B2AA;border-radius:2px;"></div>
-          <span>C Header</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-shape" style="background:#32CD32;border-radius:2px;"></div>
-          <span>Py Module</span>
-        </div>
-        <div class="legend-section-title">Edges</div>
-        <div class="legend-item">
-          <div class="legend-line" style="background:#C678DD;"></div>
-          <span>BELONGS_TO</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-line" style="background:#FF8C00;"></div>
-          <span>CALLS</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-line" style="background:#61AFEF;"></div>
-          <span>REFERENCES</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-line" style="background:#20B2AA;"></div>
-          <span>INCLUDES</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-line" style="background:#32CD32;"></div>
-          <span>IMPORTS</span>
-        </div>
+      <div class="legend-item">
+        <div class="legend-shape" style="background: #E5C07B; width: 8px; height: 8px; transform: rotate(45deg);"></div>
+        <span>Array (Diamond)</span>
+      </div>
+      <div style="font-weight: bold; margin: 12px 0 8px 0;">Relationships</div>
+      <div class="legend-item">
+        <div class="legend-line" style="background-color: #666666;"></div>
+        <span>BELONGS_TO</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background-color: #f39c12;"></div>
+        <span>CALLS</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background-color: #3498db;"></div>
+        <span>REFERENCES</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background-color: #9b59b6;"></div>
+        <span>DEFINES</span>
       </div>
     </div>
   </div>
@@ -441,137 +244,54 @@
   <script>
     const vscode = acquireVsCodeApi();
 
-    // ── File-extension color palette ───────────────────────────────────────
-    function getFileColor(node) {
-      if (node.hasErrors) return '#CD5C5C';   // error → red
-      const label = node.label || node.file || '';
-      const ext = label.split('.').pop().toLowerCase();
-      switch (ext) {
-        case 'c':   return '#FFD700';   // .c  → yellow
-        case 'py':  return '#1E3A8A';   // .py → dark navy blue
-        default:    return '#888888';   // everything else → gray
-      }
-    }
-
-    // ── Edge color by relationship ─────────────────────────────────────────
-    function getEdgeColor(edge) {
-      switch (edge.relationship || edge.type) {
-        case 'BELONGS_TO': return '#C678DD';  // Purple
-        case 'CALLS':      return '#FF8C00';  // Orange (both C and Python)
-        case 'REFERENCES': return '#61AFEF';  // Sky Blue
-        case 'INCLUDES':   return '#20B2AA';  // Teal (C)
-        case 'IMPORTS':    return '#32CD32';  // Lime Green (Python)
-        default: return '#888';
-      }
-    }
-
-    // ── Symbol node colors ─────────────────────────────────────────────────
-    function getNodeColor(node) {
-      if (node.hasErrors) return '#ff0000';
-      const nodeType = node.kind || node.type || 'default';
-      if (nodeType === 'file') return getFileColor(node);
-      if (nodeType === 'included_file') return '#20B2AA';   // Teal (C Header)
-      if (nodeType === 'imported_module') return '#32CD32'; // Lime Green (Py Module)
-      const colorMap = {
-        'function': '#61AFEF',
-        'variable': '#98C379',
-        'array':    '#E5C07B',
-        'class':    '#9b59b6',
-        'struct':   '#1abc9c',
-        'default':  '#ABB2BF'
-      };
-      return colorMap[nodeType] || colorMap.default;
-    }
-
-    // ── Part 4: Dynamic node sizing based on label length ──────────────────
-    function getNodeSize(node) {
-      const nodeType = node.kind || node.type || 'default';
-      const label = node.label || node.id || '';
-      const charCount = label.length;
-
-      if (nodeType === 'file') {
-        const minWidth = 70;
-        const w = Math.max(minWidth, charCount * 7.5 + 16);
-        const h = 32;
-        return { width: w, height: h };
-      } else {
-        const minRadius = 18;
-        const r = Math.max(minRadius, charCount * 4.2);
-        return { radius: r };
-      }
-    }
-
-    // ── Node radius / size — delegates to getNodeSize ──────────────────────
-    function getNodeRadius(node) {
-      const nodeType = node.kind || node.type || 'default';
-      const size = getNodeSize(node);
-      if (nodeType === 'file') {
-        const base = Math.max(size.width, size.height) / 2;
-        return node.hasErrors ? base * 1.3 : base;
-      }
-      return size.radius;
-    }
-
-    // Collision radius used by forceCollide — now delegates to getNodeSize
-    function getCollisionRadius(node) {
-      const nodeType = node.kind || node.type || 'default';
-      const size = getNodeSize(node);
-      if (nodeType === 'file') {
-        return Math.max(size.width, size.height) / 2 + 10;
-      }
-      return size.radius + 10;
-    }
-
-    // ── State ──────────────────────────────────────────────────────────────
-    let workspacePath = '';
-    let allNodes = [];
-    let allLinks = [];
-    let collapsedFiles = new Set();
-    let currentZoomK = 1;
-    let nodeGroupSel;
-    let linkSel;
-    let badgeSel;
-    let simulationRef;
-    let svgRef;
-    let gRef;
-    let zoomRef;
-
-    // ── Module-scope layout updater (hoisted so toggles can call it) ───────
-    function updateLayout() {
-      const barEl      = document.getElementById('stats-bar');
-      const controlsEl = document.getElementById('controls');
-      const legendEl   = document.getElementById('legend');
-      const vh = window.innerHeight;
-
-      // Side panels start just below the stats bar (or 90px as fallback)
-      const barH   = (barEl && barEl.offsetHeight) ? barEl.offsetHeight : 46;
-      const panelY = 20 + barH + 10;
-
-      if (controlsEl) {
-        const controlsH = controlsEl.offsetHeight || 160;
-        controlsEl.style.top = Math.min(panelY, vh - controlsH - 20) + 'px';
-      }
-
-      if (legendEl) {
-        const legendH = legendEl.offsetHeight || 200;
-        legendEl.style.top = Math.min(panelY, vh - legendH - 20) + 'px';
-      }
-    }
-
-    // ── Filter state ───────────────────────────────────────────────────────
-    const filterState = {
-      filterErrors:       false,
-      filterCurrentFile:  false,
-      hideVariables:      false,
-      filterFunctions:    false,
-      filterHeaders:      false,
-      filterPyImports:    false,
-      searchText:         ''
+    // Color mapping for node types
+    const nodeColors = {
+      'file': '#e74c3c',
+      'function': '#3498db',
+      'variable': '#2ecc71',
+      'array': '#f39c12',
+      'class': '#9b59b6',
+      'struct': '#1abc9c',
+      'default': '#95a5a6'
     };
+
+    function getNodeColor(node) {
+      // Red for nodes with errors
+      if (node.hasErrors) {
+        return '#ff0000';
+      }
+      return nodeColors[node.type] || nodeColors.default;
+    }
+
+    function getNodeSize(node) {
+      // Return appropriate size for each node type
+      switch(node.type) {
+        case 'file': return { width: 60, height: 40 };
+        case 'function': return { radius: 20 };
+        case 'variable': return { size: 15 };
+        case 'array': return { size: 18 };
+        default: return { radius: 18 };
+      }
+    }
+
+    function getCollisionRadius(node) {
+      // Collision radius for force simulation
+      switch(node.type) {
+        case 'file': return 35;
+        case 'function': return 22;
+        case 'variable': return 18;
+        case 'array': return 20;
+        default: return 20;
+      }
+    }
+
+    // Store workspace path globally
+    let workspacePath = '';
 
     // Listen for messages from extension
     window.addEventListener('message', event => {
       const message = event.data;
+
       if (message.type === 'graphData') {
         workspacePath = message.workspacePath || '';
         renderGraph(message.data);
@@ -586,255 +306,32 @@
       document.getElementById('error').textContent = message;
     }
 
-    // ── Wire up controls (Part 2 + Part 4) ────────────────────────────────
-    function wireControls() {
-      ['filterErrors', 'filterCurrentFile', 'hideVariables', 'filterFunctions', 'filterHeaders', 'filterPyImports'].forEach(id => {
-        document.getElementById(id).addEventListener('change', e => {
-          filterState[id] = e.target.checked;
-          applyFilters();
-        });
-      });
-
-      document.getElementById('searchBox').addEventListener('input', e => {
-        filterState.searchText = e.target.value.trim().toLowerCase();
-        applyFilters();
-      });
-    }
-
-    // ── Determine which nodes are visible given current filters ────────────
-    function getVisibleNodeIds(nodes, links) {
-      const nodeMap = new Map(nodes.map(n => [n.id, n]));
-
-      // Build adjacency for "current file + dependencies" filter
-      const neighborMap = new Map();
-      links.forEach(l => {
-        const sid = typeof l.source === 'object' ? l.source.id : l.source;
-        const tid = typeof l.target === 'object' ? l.target.id : l.target;
-        if (!neighborMap.has(sid)) neighborMap.set(sid, new Set());
-        if (!neighborMap.has(tid)) neighborMap.set(tid, new Set());
-        neighborMap.get(sid).add(tid);
-        neighborMap.get(tid).add(sid);
-      });
-
-      // Error node ids
-      const errorNodeIds = new Set(nodes.filter(n => n.hasErrors).map(n => n.id));
-      // Nodes connected to error nodes
-      const errorAdjacentIds = new Set();
-      if (filterState.filterErrors) {
-        errorNodeIds.forEach(eid => {
-          const nbrs = neighborMap.get(eid) || new Set();
-          nbrs.forEach(nid => errorAdjacentIds.add(nid));
-        });
-      }
-
-      // Current file: first file node (or we could track it)
-      let currentFileId = null;
-      if (filterState.filterCurrentFile) {
-        const fileNodes = nodes.filter(n => (n.kind || n.type) === 'file');
-        if (fileNodes.length > 0) currentFileId = fileNodes[0].id;
-      }
-
-      let visibleIds = new Set();
-
-      // Pre-compute: which included_file / imported_module ids are still reachable
-      // from at least one *non-collapsed* file node. Used below so we only hide
-      // a header/module when ALL files that reference it are collapsed.
-      const reachableFromOpenFile = new Set();
-      links.forEach(l => {
-        const sid = typeof l.source === 'object' ? l.source.id : l.source;
-        const tid = typeof l.target === 'object' ? l.target.id : l.target;
-        const rel = l.relationship || l.type || '';
-        if ((rel === 'INCLUDES' || rel === 'IMPORTS') && !collapsedFiles.has(sid)) {
-          reachableFromOpenFile.add(tid);
-        }
-      });
-
-      nodes.forEach(n => {
-        const nodeType = n.kind || n.type || '';
-
-        // Collapsed children: hide BELONGS_TO symbols of collapsed files
-        if (nodeType !== 'file' && nodeType !== 'included_file' && nodeType !== 'imported_module') {
-          const parentFileId = findParentFileId(n, links, nodeMap);
-          if (parentFileId && collapsedFiles.has(parentFileId)) return;
-        }
-
-        // Hide included_file / imported_module nodes when all their parent
-        // file nodes are collapsed (i.e. not reachable from any open file).
-        if (nodeType === 'included_file' || nodeType === 'imported_module') {
-          if (!reachableFromOpenFile.has(n.id)) return;
-        }
-
-        // Part 3: zoom-based hiding of symbols
-        if (currentZoomK < 0.3 && nodeType !== 'file') return;
-
-        // Part 2: filterErrors
-        if (filterState.filterErrors) {
-          if (!errorNodeIds.has(n.id) && !errorAdjacentIds.has(n.id)) return;
-        }
-
-        // Part 2: filterCurrentFile
-        if (filterState.filterCurrentFile && currentFileId) {
-          const nbrs = neighborMap.get(currentFileId) || new Set();
-          if (n.id !== currentFileId && !nbrs.has(n.id)) return;
-        }
-
-        // Part 2: hideVariables
-        if (filterState.hideVariables && (nodeType === 'variable' || nodeType === 'array')) return;
-
-        // filterFunctions — only show function and file nodes
-        if (filterState.filterFunctions && nodeType !== 'function' && nodeType !== 'file') return;
-
-        // filterHeaders — only show included_file nodes and the file nodes that INCLUDE them
-        if (filterState.filterHeaders) {
-          if (nodeType === 'included_file') {
-            // always show header nodes
-          } else if (nodeType === 'file') {
-            // show file node only if it has at least one INCLUDES edge to a visible header
-            const hasInclude = links.some(l => {
-              const sid = typeof l.source === 'object' ? l.source.id : l.source;
-              const rel  = l.relationship || l.type || '';
-              return sid === n.id && rel === 'INCLUDES';
-            });
-            if (!hasInclude) return;
-          } else {
-            return; // hide everything else
-          }
-        }
-
-        // filterPyImports — only show imported_module nodes and the file nodes that IMPORT them
-        if (filterState.filterPyImports) {
-          if (nodeType === 'imported_module') {
-            // always show module nodes
-          } else if (nodeType === 'file') {
-            const hasImport = links.some(l => {
-              const sid = typeof l.source === 'object' ? l.source.id : l.source;
-              const rel  = l.relationship || l.type || '';
-              return sid === n.id && rel === 'IMPORTS';
-            });
-            if (!hasImport) return;
-          } else {
-            return; // hide everything else
-          }
-        }
-
-        visibleIds.add(n.id);
-      });
-
-      return visibleIds;
-    }
-
-    function findParentFileId(node, links, nodeMap) {
-      for (const l of links) {
-        const sid = typeof l.source === 'object' ? l.source.id : l.source;
-        const tid = typeof l.target === 'object' ? l.target.id : l.target;
-        const rel = l.relationship;
-        // BELONGS_TO: source is symbol, target is file
-        if (rel === 'BELONGS_TO') {
-          if (sid === node.id) {
-            const target = nodeMap.get(tid);
-            if (target && (target.kind || target.type) === 'file') return tid;
-          }
-        }
-      }
-      return null;
-    }
-
-    // ── Apply visibility + search highlights ──────────────────────────────
-    function applyFilters() {
-      if (!nodeGroupSel) return;
-
-      const visibleIds = getVisibleNodeIds(allNodes, allLinks);
-      const searchText = filterState.searchText;
-
-      nodeGroupSel.each(function(d) {
-        const visible = visibleIds.has(d.id);
-        d3.select(this).style('display', visible ? null : 'none');
-
-        if (!visible) return;
-
-        // Part 4: search highlight
-        const shape = d3.select(this).select('.node');
-        if (searchText) {
-          const label = (d.label || '').toLowerCase();
-          if (label.includes(searchText)) {
-            // Highlight match
-            shape.attr('stroke', '#FFD700').attr('stroke-width', 3);
-            d3.select(this).style('opacity', 1);
-          } else {
-            // Dim non-matching
-            shape.attr('stroke', '#fff').attr('stroke-width', null);
-            d3.select(this).style('opacity', 0.2);
-          }
-        } else {
-          // Restore defaults
-          const nodeType = d.kind || d.type || '';
-          if (nodeType === 'file') {
-            shape.attr('stroke', '#fff').attr('stroke-width', 3);
-          } else {
-            shape.attr('stroke', '#fff').attr('stroke-width', 1.5);
-          }
-          d3.select(this).style('opacity', 1);
-        }
-      });
-
-      // Hide links where either endpoint is hidden
-      if (linkSel) {
-        linkSel.style('display', d => {
-          const sid = typeof d.source === 'object' ? d.source.id : d.source;
-          const tid = typeof d.target === 'object' ? d.target.id : d.target;
-          return (visibleIds.has(sid) && visibleIds.has(tid)) ? null : 'none';
-        });
-      }
-
-      // Update collapse badges visibility
-      updateBadges();
-    }
-
-    // ── Update collapse badges (Part 5) ───────────────────────────────────
-    function updateBadges() {
-      if (!badgeSel) return;
-      badgeSel.style('display', d => {
-        return collapsedFiles.has(d.id) ? null : 'none';
-      });
-
-      // Update badge count text
-      badgeSel.select('.collapse-badge-text').text(d => {
-        if (!collapsedFiles.has(d.id)) return '';
-        // Count hidden children
-        const hiddenCount = allLinks.filter(l => {
-          const sid = typeof l.source === 'object' ? l.source.id : l.source;
-          const tid = typeof l.target === 'object' ? l.target.id : l.target;
-          if (l.relationship !== 'BELONGS_TO') return false;
-          return sid !== d.id && tid === d.id; // child node
-        }).length;
-        return `+${hiddenCount}`;
-      });
-    }
-
-    // ── Render graph ───────────────────────────────────────────────────────
     function renderGraph(data) {
       document.getElementById('loading').style.display = 'none';
-      document.getElementById('stats-bar').style.display = 'flex';
+      document.getElementById('stats').style.display = 'block';
       document.getElementById('legend').style.display = 'block';
 
-      allNodes = data.nodes || [];
-      allLinks = data.links || [];
+      const nodes = data.nodes || [];
+      const links = data.links || [];
 
-      if (allNodes.length === 0) {
+      if (nodes.length === 0) {
         showError('No nodes in graph. Run "Snipe: Refresh Repository Symbols" first.');
         return;
       }
 
       // Update stats
-      const fileNodes = allNodes.filter(n => n.type === 'file' || n.kind === 'file').length;
-      const symbolNodes = allNodes.length - fileNodes;
-      document.getElementById('stat-files').textContent   = `${fileNodes} files`;
-      document.getElementById('stat-symbols').textContent = `${symbolNodes} symbols`;
-      document.getElementById('stat-edges').textContent   = `${allLinks.length} edges`;
+      const fileNodes = nodes.filter(n => n.type === 'file' || n.kind === 'file').length;
+      const symbolNodes = nodes.length - fileNodes;
+      document.getElementById('stats').innerHTML = `
+        <div><strong>Graph Statistics</strong></div>
+        <div>Nodes: ${nodes.length} (${fileNodes} files, ${symbolNodes} symbols)</div>
+        <div>Links: ${links.length}</div>
+      `;
 
-      // Clear old SVG
+      // Clear old SVG for dynamic updates
       d3.select('#graph-container').selectAll('svg').remove();
 
+      // Create SVG
       const container = document.getElementById('graph-container');
       const width = container.clientWidth;
       const height = container.clientHeight;
@@ -842,215 +339,72 @@
       const svg = d3.select('#graph-container')
         .append('svg')
         .attr('width', width)
-        .attr('height', height)
-        .attr('shape-rendering', 'geometricPrecision')
-        .style('-webkit-font-smoothing', 'antialiased');
+        .attr('height', height);
 
-      svgRef = svg;
-
-      // ── Part 4 + Part 7: SVG defs (glow filter + gradients) ───────────
-      const defs = svg.append('defs');
-
-      // Glow filter
-      const filter = defs.append('filter')
-        .attr('id', 'glow')
-        .attr('height', '300%')
-        .attr('width', '300%')
-        .attr('x', '-100%')
-        .attr('y', '-100%');
-      filter.append('feGaussianBlur')
-        .attr('stdDeviation', '4')
-        .attr('result', 'coloredBlur');
-      const feMerge = filter.append('feMerge');
-      feMerge.append('feMergeNode').attr('in', 'coloredBlur');
-      feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
-
-      // Gradients for file nodes
-      const gradientRed = defs.append('linearGradient').attr('id', 'grad-red').attr('x1', '0%').attr('y1', '0%').attr('x2', '0%').attr('y2', '100%');
-      gradientRed.append('stop').attr('offset', '0%').attr('stop-color', '#FF5555');
-      gradientRed.append('stop').attr('offset', '100%').attr('stop-color', '#CC3333');
-
-      const gradientYellow = defs.append('linearGradient').attr('id', 'grad-yellow').attr('x1', '0%').attr('y1', '0%').attr('x2', '0%').attr('y2', '100%');
-      gradientYellow.append('stop').attr('offset', '0%').attr('stop-color', '#FFD700');
-      gradientYellow.append('stop').attr('offset', '100%').attr('stop-color', '#FFA500');
-
-      const gradientBlue = defs.append('linearGradient').attr('id', 'grad-blue').attr('x1', '0%').attr('y1', '0%').attr('x2', '0%').attr('y2', '100%');
-      gradientBlue.append('stop').attr('offset', '0%').attr('stop-color', '#3B82F6');
-      gradientBlue.append('stop').attr('offset', '100%').attr('stop-color', '#1E40AF');
-
-      const gradientGray = defs.append('linearGradient').attr('id', 'grad-gray').attr('x1', '0%').attr('y1', '0%').attr('x2', '0%').attr('y2', '100%');
-      gradientGray.append('stop').attr('offset', '0%').attr('stop-color', '#777');
-      gradientGray.append('stop').attr('offset', '100%').attr('stop-color', '#444');
-
+      // Create zoom behavior
       const g = svg.append('g');
-      gRef = g;
 
-      // ── Initial positions: place file nodes in a circle, children near parent ──
-      // No cluster forces — the link spring keeps children close on its own.
-      const initFileNodes = allNodes.filter(n => n.kind === 'file');
-      const nonFileMap = new Map(); // fileId → [child node ids]
-      const _nodeMapInit = new Map(allNodes.map(n => [n.id, n]));
-      allLinks.forEach(l => {
-        const sid = typeof l.source === 'object' ? l.source.id : l.source;
-        const tid = typeof l.target === 'object' ? l.target.id : l.target;
-        const rel = l.relationship || l.type || '';
-        if (rel === 'BELONGS_TO' || rel === 'INCLUDES' || rel === 'IMPORTS') {
-          // tid is the file for BELONGS_TO; sid is the file for INCLUDES/IMPORTS
-          const fileId = rel === 'BELONGS_TO' ? tid : sid;
-          const childId = rel === 'BELONGS_TO' ? sid : tid;
-          if (!nonFileMap.has(fileId)) nonFileMap.set(fileId, []);
-          nonFileMap.get(fileId).push(childId);
-        }
-      });
-      initFileNodes.forEach((fn, i) => {
-        const angle = (i / Math.max(initFileNodes.length, 1)) * Math.PI * 2;
-        // Small initial radius — nodes start close to centre and the
-        // simulation spreads them just enough to avoid overlap.
-        const r = Math.min(initFileNodes.length * 30, 80);
-        fn.x = width / 2 + Math.cos(angle) * r;
-        fn.y = height / 2 + Math.sin(angle) * r;
-        // Place children right on top of their file; spring pulls them to 55px
-        const children = nonFileMap.get(fn.id) || [];
-        children.forEach((cid, j) => {
-          const cn = _nodeMapInit.get(cid);
-          if (!cn) return;
-          const ca = angle + (j / Math.max(children.length, 1)) * Math.PI * 2;
-          cn.x = fn.x + Math.cos(ca) * 20;
-          cn.y = fn.y + Math.sin(ca) * 20;
-        });
-      });
-
-      // ── Zoom — scaleExtent [0.3, 2.5] ─────────────────────────────────
       const zoom = d3.zoom()
-        .scaleExtent([0.3, 2.5])
+        .scaleExtent([0.1, 10])
         .on('zoom', (event) => {
-          const transform = event.transform;
-          g.attr('transform', transform);
-
-          const newK = transform.k;
-
-          // Issue 3: Inverse scaling for FILE nodes only.
-          // Symbol nodes (circles, squares, diamonds) stay fixed size.
-          const inverseScale = 1 / Math.sqrt(newK);
-
-          nodeGroupSel.each(function(d) {
-            const grp = d3.select(this);
-            const nodeType = d.kind || d.type || 'default';
-
-            if (nodeType === 'file') {
-              // Scale rect and label inversely with zoom
-              const baseR = getNodeRadius(d); // already accounts for hasErrors
-              const w = (d._baseW || baseR * 2) * inverseScale;
-              const h = (d._baseH || baseR * 1.4) * inverseScale;
-              grp.select('rect.node')
-                .attr('width', w).attr('height', h)
-                .attr('x', -w / 2).attr('y', -h / 2);
-              grp.select('text')
-                .attr('font-size', (11 * inverseScale) + 'px');
-            }
-            // Symbol nodes: do NOT rescale — their size stays constant in graph space
-          });
-
-          // Zoom threshold for symbol visibility filter
-          if ((newK < 0.3) !== (currentZoomK < 0.3)) {
-            currentZoomK = newK;
-            applyFilters();
-          } else {
-            currentZoomK = newK;
-          }
+          g.attr('transform', event.transform);
         });
 
-      zoomRef = zoom;
       svg.call(zoom);
 
-      // ── Part 3: Force simulation ───────────────────────────────────────
-      const simulation = d3.forceSimulation(allNodes)
-        .alphaDecay(0.028)
-        .velocityDecay(0.6)
-        .force('link', d3.forceLink(allLinks)
+      // Create force simulation
+      const simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links)
           .id(d => d.id)
-          .distance(d => {
-            const rel = d.relationship || d.type || '';
-            if (rel === 'BELONGS_TO' || rel === 'INCLUDES' || rel === 'IMPORTS') return 55;
-            return 120;
-          })
-          .strength(d => {
-            const rel = d.relationship || d.type || '';
-            if (rel === 'BELONGS_TO' || rel === 'INCLUDES' || rel === 'IMPORTS') return 1.0;
-            return 0.2;
-          }))
-        .force('charge', d3.forceManyBody().strength(-60))   // very gentle repulsion
-        .force('center', d3.forceCenter(width / 2, height / 2).strength(0.8)) // strong pull to centre on startup
-        .force('collision', d3.forceCollide()
-          .radius(d => getCollisionRadius(d) + 4)
-          .strength(0.8));
+          .distance(d => d.relationship === 'BELONGS_TO' ? 60 : 120))
+        .force('charge', d3.forceManyBody()
+          .strength(d => d.type === 'file' ? -800 : -300))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(d => getCollisionRadius(d)));
 
-      simulationRef = simulation;
-
-      // ── Part 8: Links as curved paths ──────────────────────────────────
-      const linkGroup = g.append('g');
-      linkSel = linkGroup.selectAll('path')
-        .data(allLinks)
+      // Create links
+      const link = g.append('g')
+        .selectAll('line')
+        .data(links)
         .enter()
-        .append('path')
+        .append('line')
         .attr('class', d => `link link-${d.relationship}`)
-        .attr('stroke', d => getEdgeColor(d))
-        .attr('stroke-dasharray', d => d.relationship === 'BELONGS_TO' ? '5,5' : '0')
-        .attr('fill', 'none')
-        .attr('stroke-opacity', 0.5);
+        .attr('stroke-dasharray', d => d.relationship === 'BELONGS_TO' ? '5,5' : '0');
 
-      // ── Node groups ────────────────────────────────────────────────────
-      const nodeContainer = g.append('g');
-      nodeGroupSel = nodeContainer.selectAll('g')
-        .data(allNodes)
+      // Create node groups
+      const nodeGroup = g.append('g')
+        .selectAll('g')
+        .data(nodes)
         .enter()
         .append('g')
         .attr('class', 'node-group')
         .on('click', (event, d) => {
-          // Use a 300ms delay to distinguish single-click (navigate) from
-          // double-click (collapse/expand). clearTimeout on dblclick cancels nav.
-          if (d._clickTimer) {
-            clearTimeout(d._clickTimer);
-            d._clickTimer = null;
-            return; // second click within 300ms — let dblclick handler take over
-          }
-          d._clickTimer = setTimeout(() => {
-            d._clickTimer = null;
-            let absolutePath = d.file || d.file_path || '';
-            if (!absolutePath.startsWith('/') && workspacePath) {
-              absolutePath = workspacePath + '/' + absolutePath;
-            }
-            const nodeType = d.kind || d.type || '';
-            if (nodeType === 'file') {
-              vscode.postMessage({ type: 'openFile', file: absolutePath, line: 1 });
-            } else if (absolutePath && d.line !== undefined) {
-              vscode.postMessage({ type: 'openFile', file: absolutePath, line: d.line });
-            }
-          }, 300);
-        })
-        // Double-click: unpin node (release fx/fy so it floats freely again).
-        // For file nodes, also toggle collapse/expand.
-        .on('dblclick', (event, d) => {
-          event.stopPropagation();
-          if (d._clickTimer) {
-            clearTimeout(d._clickTimer);
-            d._clickTimer = null;
+          console.log('Clicked node:', d);
+
+          // Build absolute path
+          let absolutePath = d.file || d.file_path || '';
+
+          // If path is relative, prepend workspace path
+          if (!absolutePath.startsWith('/') && workspacePath) {
+            absolutePath = workspacePath + '/' + absolutePath;
           }
 
-          // Unpin — let the simulation move this node freely again
-          d.fx = null;
-          d.fy = null;
-          simulation.alpha(0.3).restart();
-
-          // For file nodes also toggle collapse/expand
-          const nodeType = d.kind || d.type || '';
-          if (nodeType === 'file') {
-            if (collapsedFiles.has(d.id)) {
-              collapsedFiles.delete(d.id);
-            } else {
-              collapsedFiles.add(d.id);
-            }
-            applyFilters();
+          if (d.type === 'file' || d.kind === 'file') {
+            // FILE NODE: Open the file at line 1
+            console.log('Opening file:', absolutePath);
+            vscode.postMessage({
+              type: 'openFile',
+              file: absolutePath,
+              line: 1
+            });
+          } else if (absolutePath && d.line !== undefined) {
+            // SYMBOL NODE: Open at specific line
+            console.log('Navigating to:', absolutePath, 'line:', d.line);
+            vscode.postMessage({
+              type: 'openFile',
+              file: absolutePath,
+              line: d.line
+            });
           }
         })
         .call(d3.drag()
@@ -1058,220 +412,88 @@
           .on('drag', dragged)
           .on('end', dragended));
 
-      // ── Draw shapes (Part 4: dynamic sizing, full labels) ─────────────
-      nodeGroupSel.each(function(d) {
+      // Add shapes based on node type
+      nodeGroup.each(function(d) {
         const group = d3.select(this);
-        const nodeType = d.kind || d.type || 'default';
-        const size = getNodeSize(d);
-        const fullLabel = d.label || d.id || '';
+        const nodeType = d.kind || 'default';
+        const color = getNodeColor(d);
 
         if (nodeType === 'file') {
-          let { width: w, height: h } = size;
-          // Error files get a slight size boost for visibility
-          if (d.hasErrors) { w = Math.round(w * 1.15); h = Math.round(h * 1.15); }
-          d._baseW = w; d._baseH = h; // store for zoom inverse scaling
-
-          const fp = d.file_path || d.file || d.label || '';
-          let gradientFill;
-          if (d.hasErrors)           gradientFill = 'url(#grad-red)';
-          else if (fp.endsWith('.c')) gradientFill = 'url(#grad-yellow)';
-          else if (fp.endsWith('.py'))gradientFill = 'url(#grad-blue)';
-          else                        gradientFill = 'url(#grad-gray)';
-
+          // File: Rounded rectangle (60x40, rx=8)
           group.append('rect')
             .attr('class', d.hasErrors ? 'node node-file node-file-error' : 'node node-file')
-            .attr('width', w).attr('height', h)
-            .attr('x', -w / 2).attr('y', -h / 2)
-            .attr('rx', 6)
-            .attr('fill', gradientFill)
-            .attr('stroke-width', 2.5);
-
+            .attr('width', 60)
+            .attr('height', 40)
+            .attr('x', -30)
+            .attr('y', -20)
+            .attr('rx', 8)
+            .attr('fill', d.hasErrors ? '#ff0000' : '#FFD700');
         } else if (nodeType === 'function') {
+          // Function: Circle (r=20)
           group.append('circle')
             .attr('class', d.hasErrors ? 'node node-function node-error' : 'node node-function')
-            .attr('r', size.radius)
+            .attr('r', 20)
             .attr('fill', d.hasErrors ? '#ff0000' : '#61AFEF');
-
         } else if (nodeType === 'variable') {
-          const s = size.radius * 1.8;
+          // Variable: Square (30x30, NOT rotated)
           group.append('rect')
             .attr('class', d.hasErrors ? 'node node-variable node-error' : 'node node-variable')
-            .attr('width', s).attr('height', s)
-            .attr('x', -s / 2).attr('y', -s / 2)
+            .attr('width', 30)
+            .attr('height', 30)
+            .attr('x', -15)
+            .attr('y', -15)
             .attr('fill', d.hasErrors ? '#ff0000' : '#98C379');
-
         } else if (nodeType === 'array') {
-          const s = size.radius * 2.0;
+          // Array: Diamond (30x30 square rotated 45 degrees)
           group.append('rect')
             .attr('class', d.hasErrors ? 'node node-array node-error' : 'node node-array')
-            .attr('width', s).attr('height', s)
-            .attr('x', -s / 2).attr('y', -s / 2)
+            .attr('width', 28)
+            .attr('height', 28)
+            .attr('x', -14)
+            .attr('y', -14)
             .attr('transform', 'rotate(45)')
             .attr('fill', d.hasErrors ? '#ff0000' : '#E5C07B');
-
-        } else if (nodeType === 'included_file') {
-          // C header / included file — hexagonal feel via rotated rect
-          const s = size.radius * 1.8;
-          group.append('rect')
-            .attr('class', 'node')
-            .attr('width', s).attr('height', s)
-            .attr('x', -s / 2).attr('y', -s / 2)
-            .attr('rx', 4)
-            .attr('fill', '#20B2AA');
-
-        } else if (nodeType === 'imported_module') {
-          // Python imported module — rounded square, lime green
-          const s = size.radius * 1.8;
-          group.append('rect')
-            .attr('class', 'node')
-            .attr('width', s).attr('height', s)
-            .attr('x', -s / 2).attr('y', -s / 2)
-            .attr('rx', 4)
-            .attr('fill', '#32CD32');
-
         } else {
+          // Default: circle for other types
           group.append('circle')
             .attr('class', d.hasErrors ? 'node node-error' : 'node')
-            .attr('r', size.radius)
+            .attr('r', 15)
             .attr('fill', d.hasErrors ? '#ff0000' : '#ABB2BF');
         }
 
-        // Part 4: Full label text — no truncation, node auto-sized to fit
-        const isFile = nodeType === 'file';
+        // Add label
         group.append('text')
-          .attr('class', 'node-label-text')
-          .text(fullLabel)
+          .text(d.label)
+          .attr('dy', 35)
           .attr('text-anchor', 'middle')
-          .attr('dominant-baseline', 'central')
-          .attr('fill', '#fff')
-          .attr('font-size', isFile ? '11px' : '10px')
-          .attr('font-family', 'system-ui, -apple-system, sans-serif')
-          .attr('font-weight', '500')
-          .attr('letter-spacing', '0.3px')
-          .attr('pointer-events', 'none');
+          .attr('font-size', '10px')
+          .attr('fill', '#d4d4d4');
       });
 
-      // ── Collapse badges (Part 5) ───────────────────────────────────────
-      badgeSel = nodeContainer.selectAll('.badge-group')
-        .data(allNodes.filter(n => (n.kind || n.type) === 'file'))
-        .enter()
-        .append('g')
-        .attr('class', 'badge-group')
-        .style('display', 'none')
-        .style('pointer-events', 'none');
-
-      badgeSel.append('circle')
-        .attr('class', 'collapse-badge')
-        .attr('cx', 25)
-        .attr('cy', -18)
-        .attr('r', 9);
-
-      badgeSel.append('text')
-        .attr('class', 'collapse-badge-text')
-        .attr('x', 25)
-        .attr('y', -14)
-        .attr('text-anchor', 'middle');
-
-      // ── Part 9: Pulse animation CSS for error nodes ────────────────────
-      if (!document.getElementById('snipe-pulse-style')) {
-        const style = document.createElement('style');
-        style.id = 'snipe-pulse-style';
-        style.textContent = `
-          @keyframes snipe-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.65; }
-          }
-          .node-pulse { animation: snipe-pulse 2s ease-in-out infinite; }
-        `;
-        document.head.appendChild(style);
-      }
-      nodeGroupSel.filter(d => d.hasErrors)
-        .select('.node')
-        .classed('node-pulse', true);
-
-      // ── Part 4: Glow effect on hover ───────────────────────────────────
-      nodeGroupSel
-        .on('mouseenter', function(event, d) {
-          d3.select(this).style('filter', 'url(#glow)');
-          d3.select(this).select('.node')
-            .transition().duration(200)
-            .attr('stroke-width', 3);
-        })
-        .on('mouseleave', function(event, d) {
-          d3.select(this).style('filter', null);
-          const nodeType = d.kind || d.type || '';
-          d3.select(this).select('.node')
-            .transition().duration(200)
-            .attr('stroke-width', nodeType === 'file' ? 2.5 : 1.5);
+      // Add tooltips
+      nodeGroup.append('title')
+        .text(d => {
+          let text = `${d.label} (${d.type || d.kind})`;
+          if (d.file) text += `\n${d.file}`;
+          if (d.line) text += `:${d.line}`;
+          if (d.dataType) text += `\nType: ${d.dataType}`;
+          if (d.symbolCount) text += `\nSymbols: ${d.symbolCount}`;
+          return text;
         });
 
-      // ── Part 10: Styled tooltip ────────────────────────────────────────
-      // Remove any existing tooltip
-      d3.select('.graph-tooltip').remove();
-      const tooltip = d3.select('body').append('div')
-        .attr('class', 'graph-tooltip')
-        .style('position', 'absolute')
-        .style('background', 'rgba(10, 10, 20, 0.92)')
-        .style('color', '#e8e8e8')
-        .style('padding', '8px 12px')
-        .style('border-radius', '6px')
-        .style('font-size', '12px')
-        .style('font-family', 'system-ui, -apple-system, sans-serif')
-        .style('pointer-events', 'none')
-        .style('opacity', 0)
-        .style('z-index', '9999')
-        .style('border', '1px solid #444')
-        .style('box-shadow', '0 4px 16px rgba(0,0,0,0.5)')
-        .style('max-width', '260px')
-        .style('line-height', '1.5');
-
-      nodeGroupSel
-        .on('mouseover.tooltip', function(event, d) {
-          const nodeType = d.kind || d.type || '';
-          const filePart = d.file || d.file_path || '';
-          const linePart = d.line ? `:${d.line}` : '';
-          tooltip.transition().duration(150).style('opacity', 1);
-          tooltip.html(`
-            <strong style="color:#fff">${d.label || d.id}</strong><br/>
-            <span style="color:#888">Type:</span> ${nodeType}
-            ${filePart ? `<br/><span style="color:#888">File:</span> ${filePart}${linePart}` : ''}
-            ${d.dataType ? `<br/><span style="color:#888">DataType:</span> ${d.dataType}` : ''}
-            ${d.symbolCount ? `<br/><span style="color:#888">Symbols:</span> ${d.symbolCount}` : ''}
-            ${d.hasErrors ? '<br/><span style="color:#FF5555;font-weight:600">⚠ Has errors</span>' : ''}
-          `)
-          .style('left', (event.pageX + 14) + 'px')
-          .style('top', (event.pageY - 14) + 'px');
-        })
-        .on('mousemove.tooltip', function(event) {
-          tooltip
-            .style('left', (event.pageX + 14) + 'px')
-            .style('top', (event.pageY - 14) + 'px');
-        })
-        .on('mouseout.tooltip', function() {
-          tooltip.transition().duration(150).style('opacity', 0);
-        });
-
-      // ── Tick ───────────────────────────────────────────────────────────
+      // Update positions on tick
       simulation.on('tick', () => {
-        // Curved arc paths
-        linkSel.attr('d', d => {
-          const dx = d.target.x - d.source.x;
-          const dy = d.target.y - d.source.y;
-          const dr = Math.sqrt(dx * dx + dy * dy) * 1.5;
-          return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
-        });
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
 
-        nodeGroupSel.attr('transform', d => `translate(${d.x},${d.y})`);
-
-        // Sync badge positions to their file node
-        badgeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+        nodeGroup
+          .attr('transform', d => `translate(${d.x},${d.y})`);
       });
 
-      // ── Drag ───────────────────────────────────────────────────────────
-      // FILE nodes are pinned on drop (stay where you leave them).
-      // All other nodes (functions, variables, arrays, headers, modules)
-      // release freely so the simulation can continue to move them.
-      // Double-clicking a FILE node unpins it and lets it float again.
+      // Drag functions
       function dragstarted(event, d) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
@@ -1285,59 +507,27 @@
 
       function dragended(event, d) {
         if (!event.active) simulation.alphaTarget(0);
-        const nodeType = d.kind || d.type || '';
-        if (nodeType === 'file') {
-          // FILE nodes stay pinned exactly where dropped.
-          // The link spring (strength 1.0, distance 55) pulls children
-          // in on its own — no extra kick needed.
-          d.fx = event.x;
-          d.fy = event.y;
-        } else {
-          // All other nodes float free after drag
-          d.fx = null;
-          d.fy = null;
-        }
+        d.fx = null;
+        d.fy = null;
       }
 
-      // ── Initial zoom-to-fit ────────────────────────────────────────────
+      // Initial zoom to fit
       setTimeout(() => {
         const bounds = g.node().getBBox();
-        if (bounds.width > 0 && bounds.height > 0) {
-          const scale = 0.9 * Math.min(width / bounds.width, height / bounds.height);
-          const tx = width / 2 - scale * (bounds.x + bounds.width / 2);
-          const ty = height / 2 - scale * (bounds.y + bounds.height / 2);
+        const fullWidth = bounds.width;
+        const fullHeight = bounds.height;
+        const midX = bounds.x + fullWidth / 2;
+        const midY = bounds.y + fullHeight / 2;
+
+        if (fullWidth > 0 && fullHeight > 0) {
+          const scale = 0.9 * Math.min(width / fullWidth, height / fullHeight);
+          const translate = [width / 2 - scale * midX, height / 2 - scale * midY];
+
           svg.transition()
             .duration(750)
-            .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+            .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
         }
       }, 1000);
-
-      window.addEventListener('resize', updateLayout);
-      updateLayout();
-
-      // Wire controls now that graph is ready
-      wireControls();
-      // Initial filter pass
-      applyFilters();
-    }
-
-    // ── Collapsible panel toggles ──────────────────────────────────────────
-    function toggleLegend() {
-      const body  = document.getElementById('legend-body');
-      const arrow = document.getElementById('legend-arrow');
-      const isHidden = body.style.display === 'none';
-      body.style.display  = isHidden ? 'block' : 'none';
-      arrow.textContent   = isHidden ? '▼' : '▶';
-      setTimeout(updateLayout, 0);
-    }
-
-    function toggleFilters() {
-      const body  = document.getElementById('filters-body');
-      const arrow = document.getElementById('filters-arrow');
-      const isHidden = body.style.display === 'none';
-      body.style.display  = isHidden ? 'block' : 'none';
-      arrow.textContent   = isHidden ? '▼' : '▶';
-      setTimeout(updateLayout, 0);
     }
 
     // Request initial data
