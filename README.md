@@ -3,7 +3,9 @@
 
 Real-time code analysis that detects **cross-file semantic errors**, type inconsistencies, array bound violations, and function signature drift **while you type**—before files are saved—without external security APIs.
 
-**USP:** *"We catch cross-file bugs before you even save your file."*
+**USP:** *"Fix bugs before the save. Map the impact before the crash."*
+
+Website - https://ui-snipe.vercel.app/
 
 ---
 Software Milestone and SRS - [snipe software docs](https://github.com/NucleiAv/snipe/blob/main/live_repo_aware_semantic_guardian_sdp_and_srs.md)
@@ -247,3 +249,4 @@ git fetch origin
 git branch -u origin/main main
 git remote set-head origin -a
 ```
+
