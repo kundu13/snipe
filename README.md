@@ -8,13 +8,13 @@ Real-time code analysis that detects **cross-file semantic errors**, type incons
 Website - https://ui-snipe.vercel.app/
 
 ---
-Software Milestone and SRS - [snipe software docs](https://github.com/NucleiAv/snipe/blob/main/live_repo_aware_semantic_guardian_sdp_and_srs.md)
+Software Milestone and SRS - [snipe software docs](https://github.com/kundu13/snipe/main/live_repo_aware_semantic_guardian_sdp_and_srs.md)
 
-Contributors must read - [snipe contributions doc](https://github.com/NucleiAv/snipe/blob/main/CONTRIBUTING.md)
+Contributors must read - [snipe contributions doc](https://github.com/kundu13/snipe/main/CONTRIBUTING.md)
 
-Comparison of snipe with other existing tools - [snipe vs others](https://github.com/NucleiAv/snipe/blob/main/snipe_VS_other.md)
+Comparison of snipe with other existing tools - [snipe vs others](https://github.com/kundu13/snipe/main/snipe_VS_other.md)
 
-Supported handled error - [supported error handling](https://github.com/NucleiAv/snipe/blob/extend-error-handling/supported_error_handling.md)
+Supported handled error - [supported error handling](https://github.com/kundu13/snipe/supported_error_handling.md)
 
 ---
 
@@ -249,4 +249,5 @@ git fetch origin
 git branch -u origin/main main
 git remote set-head origin -a
 ```
+
 
